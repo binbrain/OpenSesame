@@ -13,20 +13,15 @@ class Launcher(object):
     window = None
 
     def popup(self):
-        try:
-            ring = OpenKeyring()
-            search = Searchable(ring.get_position_searchable())
-            if self.window:
-                self.window.do_destroy(self.window)
-            self.window = SearchPopup(search, ring, pw_engine)
-            def showit():
-                self.window.present()
-                self.window.grab_focus()
-            gtk.idle_add(showit)
-        except Exception as e:
-            f = open("/home/binbrain/out", 'w')
-            f.write(str(e))
-            f.close()
+        ring = OpenKeyring()
+        search = Searchable(ring.get_position_searchable())
+        if self.window:
+            self.window.do_destroy(self.window)
+        self.window = SearchPopup(search, ring, pw_engine)
+        def showit():
+            self.window.present()
+            self.window.grab_focus()
+        gtk.idle_add(showit)
 
 def main():
     launcher = Launcher()
