@@ -6,8 +6,12 @@ store and retrieve generated passwords. Passwords are generated using APG
 (Automated Password Generator) so that the passwords are easy to remember. To
 retrieve a password you only need to remember the name the password was stored
 as. For example, run OpenSesame and enter 'twitter' to place your twitter pass-
-word into the buffer.
+word into the cntl-v paste buffer.
 
 Installation
 ============
 python setup.py install
+
+Dependencies
+============
+python pygtk pycairo apg keybinder

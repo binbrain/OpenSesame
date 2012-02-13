@@ -3,6 +3,7 @@ import cairo
 from gtk.gdk import keyval_name
 from math import pi as M_PI
 
+
 class SearchPopup(gtk.Window):
     def __init__(self, search, ring, pw_engine):
         super(SearchPopup, self).__init__()
@@ -15,11 +16,11 @@ class SearchPopup(gtk.Window):
         self.set_app_paintable(True)
         self.set_colormap(self.get_screen().get_rgba_colormap())
         self.set_property("resizable", False)
-        self.connect("expose-event", self.do_expose_event) 
-        self.connect("key-press-event", self.key_pressed)
         self.set_skip_taskbar_hint(True)
         self.set_skip_pager_hint(True)
-        
+        self.connect("expose-event", self.do_expose_event) 
+        self.connect("key-press-event", self.key_pressed)
+
     def do_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         # Sets the operator to clear which deletes everything below where an 
@@ -85,26 +86,23 @@ class SearchPopup(gtk.Window):
                 close = True
         elif keyval_name(key_pressed) == 'space':
             if len(self.search.string) > 0:
-                if self.ring.no_match_exists(self.search.string):
-                    # TODO unsecured memory
-                    pw, phonetic = self.pw_engine.create_passwords()[0]
-                    self.ring.save_password(pw
-                                           ,searchable=self.search.string
-                                           ,phonetic=phonetic)
-                    clip = gtk.clipboard_get()
-                    clip.set_text(pw)
-                    close = True
-                else:
-                    print "match exists :("
+                # TODO unsecured memory
+                pw, phonetic = self.pw_engine.create_passwords()[0]
+                self.ring.save_password(pw
+                                       ,searchable=self.search.string
+                                       ,phonetic=phonetic)
+                clip = gtk.clipboard_get()
+                clip.set_text(pw)
+                close = True
         elif keyval_name(key_pressed) == 'Escape':
             close = True
         elif key_pressed < 256 and key_pressed > 32:
             self.search.push(chr(key_pressed))
         return close
-
+                
     def _redraw_left_frame(self, widget, key_pressed):
         cr = widget.window.cairo_create()
-        self._inside_frame(cr, 13)
+        self._inside_frame(cr, 11)
         cr.set_source_rgb(1, 1, 1)
         cr.select_font_face("Monospace")
         cr.set_font_size(26.0)
@@ -125,11 +123,4 @@ class SearchPopup(gtk.Window):
             self._redraw_left_frame(widget, event.keyval)
             self._redraw_right_frame(widget, event.keyval)
         else:
-            """
-            self.hide()
-            event = gtk.gdk.Event(gtk.gdk.KEY_PRESS)
-            event.keyval = gtk.keysyms.Return
-            event.time = 0
-            self.emit('key-press-event', event)
-            """
-            self.destroy()
+            self.emit("copied-event")

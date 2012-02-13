@@ -70,15 +70,21 @@ class OpenKeyring(object):
             position_searchable[i] = item_attrs['searchable'] 
         return position_searchable
 
-    def no_match_exists(self, searchable):
+    def _match_exists(self, searchable):
         """Make sure the searchable description doesn't already exist"""
         position_searchable = self.get_position_searchable()
         for val in position_searchable.values():
             if val == searchable:
-                return False
-        return True
+                return True
+        return False
 
     def save_password(self, password, **attrs):
+        """Save the new password, but don't wipe out an older version of 
+        searchable
+        """
+        if self._match_exists(attrs['searchable']):
+            # TODO finish implementing this
+            gkr.item_get_attributes_sync(self.keyring, i)['searchable'] = 'old ' + attrs['searchable']
         desc = attrs['searchable']
         pos = gkr.item_create_sync(self.keyring
                                   ,gkr.ITEM_GENERIC_SECRET

@@ -9,10 +9,10 @@ setup(name='OpenSesame',
       author_email='binbrain@gmail.com',
       url='http://github.com/binbrain/OpenSesame',
       entry_points={'console_scripts':
-                    ['opensesame=OpenSesame.opensesame:main',
-                     'opensesame-manager=OpenSesame.manager:main']                    
+                    ['opensesame=OpenSesame.opensesame:main']                    
                     },
       packages=['OpenSesame', 'OpenSesame.gui'],
       include_package_data=True,
-      data_files=[('OpenSesame/gui/', ['OpenSesame/gui/key.png'])],
+      data_files=[('OpenSesame/gui/', ['OpenSesame/gui/key.png']),
+                  ('/etc/xdg/autostart/', ['opensesame.desktop'])],
       zip_safe=True)
