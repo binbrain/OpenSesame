@@ -15,6 +15,26 @@ def yieldsleep(func):
         glib.idle_add(step)
     return start
 
+def secured_clipboard(pw):
+    """ this clipboard only allows 1 paste """
+
+    def set_text(clipboard, selectiondata, info, data):
+        selectiondata.set_text(pw)
+        clipboard.clear()
+
+    def clear(clipboard, data):
+        print clipboard
+        print data
+        print "should be cleared by now"
+
+    targets = [ ("STRING", 0, 0),
+              ("TEXT", 0, 1),
+              ("COMPOUND_TEXT", 0, 2),
+              ("UTF8_STRING", 0, 3) ]
+    cp = gtk.clipboard_get()
+    cp.set_with_data(targets, set_text, clear)
+        
+
 def get_active_window():
     active_win = None
     default = wnck.screen_get_default()
@@ -30,11 +50,7 @@ def get_active_window():
 
 def paste(active_win):
     xdotool_cmd = 'xdotool search "%s" windowactivate --sync  key --clearmodifiers ctrl+v' % active_win
-    print xdotool_cmd
     p = subprocess.Popen(xdotool_cmd, stdout=subprocess.PIPE ,stderr=subprocess.PIPE, shell=True)
     output, errors = p.communicate()
-    clip = gtk.clipboard_get()
-    clip.clear()
-    print output
+    print "errors"
     print errors
-    print "buffer cleared"

@@ -14,25 +14,23 @@ import OpenSesame.password as pw_engine
 
 
 class Launcher(gobject.GObject):
-    popup = None
     def __init__(self):
         self.__gobject_init__()
         gobject.signal_new("copied-event", SearchPopup, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
 
     def copied_to_buffer(self, widget):
+        widget.hide()
         widget.destroy()
         paste(self.active_win)
         self.emit("pasted-event")
 
     def do_keyfade(self, widget):
         def showit():
-            print "popping up keyfade"
             self.keyfade = KeyFade(self.active_win)
             self.keyfade.present()
         gtk.idle_add(showit)
 
     def popup(self):
-        print "got calle"
         self.active_win = get_active_window()[0:20]
         ring = OpenKeyring()
         search = Searchable(ring.get_position_searchable())
@@ -40,7 +38,6 @@ class Launcher(gobject.GObject):
             self.popup = SearchPopup(search, ring, pw_engine)
             self.popup.connect("copied-event", self.copied_to_buffer)
             self.popup.present()
-            #self.popup.grab_focus()
         gtk.idle_add(showit)
 
 def main():

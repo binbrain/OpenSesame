@@ -3,6 +3,8 @@ import cairo
 from gtk.gdk import keyval_name
 from math import pi as M_PI
 
+from OpenSesame.xutils import secured_clipboard
+
 
 class SearchPopup(gtk.Window):
     def __init__(self, search, ring, pw_engine):
@@ -80,9 +82,7 @@ class SearchPopup(gtk.Window):
         elif keyval_name(key_pressed) == 'Return':
             best_guess_pos = self.search.best_guess()[0]
             if best_guess_pos:
-                clip = gtk.clipboard_get()
-                # no secure way to put secret into clipboard
-                clip.set_text(self.ring.get_password(best_guess_pos))
+                secured_clipboard(self.ring.get_password(best_guess_pos))
                 close = True
         elif keyval_name(key_pressed) == 'space':
             if len(self.search.string) > 0:
@@ -91,8 +91,7 @@ class SearchPopup(gtk.Window):
                 self.ring.save_password(pw
                                        ,searchable=self.search.string
                                        ,phonetic=phonetic)
-                clip = gtk.clipboard_get()
-                clip.set_text(pw)
+                secured_clipboard(pw)
                 close = True
         elif keyval_name(key_pressed) == 'Escape':
             close = True

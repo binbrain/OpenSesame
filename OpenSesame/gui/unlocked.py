@@ -24,12 +24,12 @@ class KeyFade(gtk.Window):
     @yieldsleep
     def do_expose_event(self, widget, event): 
         if self.fading:
-            timer = range(0,20)
+            timer = range(0,18)
             timer.reverse()
-            fadealpha = 0.5
+            fadealpha = 0.9
             for i in timer:
                 yield i/4*i
-                fadealpha -= .025
+                fadealpha -= .05
                 cr = widget.window.cairo_create()
                 cr.set_operator(cairo.OPERATOR_CLEAR)
                 cr.rectangle(0, 0, *widget.get_size())
