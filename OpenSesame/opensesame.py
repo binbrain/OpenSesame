@@ -14,6 +14,7 @@ import OpenSesame.password as pw_engine
 
 
 class Launcher(gobject.GObject):
+    popupwin=None
     def __init__(self):
         self.__gobject_init__()
         gobject.signal_new("copied-event", SearchPopup, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
@@ -31,13 +32,16 @@ class Launcher(gobject.GObject):
         gtk.idle_add(showit)
 
     def popup(self):
+        if self.popupwin:
+            self.popupwin.hide()
+            self.popupwin.destroy()
         self.active_win = get_active_window()
         ring = OpenKeyring()
         search = Searchable(ring.get_position_searchable())
         def showit():
-            self.popup = SearchPopup(search, ring, pw_engine)
-            self.popup.connect("copied-event", self.copied_to_buffer)
-            self.popup.present()
+            self.popupwin = SearchPopup(search, ring, pw_engine)
+            self.popupwin.connect("copied-event", self.copied_to_buffer)
+            self.popupwin.present()
         gtk.idle_add(showit)
 
 def main():

@@ -23,7 +23,8 @@ class Searchable(object):
             self.candidates.pop()
 
     def _instant_search(self):
-        """Determine possible keys after a push or pop"""
+        """Determine possible keys after a push or pop
+        """
         _keys = []
         for k,v in self.searchables.iteritems():
             if self.string in v:
@@ -31,7 +32,8 @@ class Searchable(object):
         self.candidates.append(_keys)
 
     def best_guess(self):
-        """Return the gnomekeyring position of the closest matching"""
+        """Return the gnomekeyring position of the closest matching
+        """
         best_guess_ever = (0, 0) # (key, string)
         points = defaultdict(float)
         points[0] = 0

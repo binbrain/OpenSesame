@@ -120,3 +120,6 @@ class SearchPopup(gtk.Window):
                 self._redraw_right_frame(widget, event.keyval)
             else:
                 self.emit("copied-event")
+        else:
+            self.hide()
+            self.destroy()
