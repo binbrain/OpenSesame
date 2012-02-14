@@ -31,15 +31,22 @@ class TestKeyRing(object):
         assert(info.get_display_name() == "twitter")
         assert(info.get_secret() == "Awawmak9")
 
+    def test_overwrite_password(self):
+        """Creating a new key with an already existing searchable
+        overwrites the old key, but saves the old password in the 
+        new keys attributes just in case
+        """
+        pass
+
     def test_get_position_searchable(self):
         self._load_passwords()
         id_searchable = self.openkeyring.get_position_searchable()
         assert(len(id_searchable) == 5)
 
-    def test_no_match_exists(self):
+    def test_match_exists(self):
         self._load_passwords()
-        assert(self.openkeyring.no_match_exists("Nothing"))
-        assert(not self.openkeyring.no_match_exists("twitter"))
+        assert(not self.openkeyring._match_exists("Nothing"))
+        assert(self.openkeyring._match_exists("twitter"))
 
     def test_unlock_keyring(self):
         gkr.lock_sync(self.keyring)

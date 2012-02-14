@@ -8,11 +8,13 @@ http://developer.gnome.org/gnome-keyring/stable/gnome-keyring-Non-pageable-Memor
 """
 
 import gnomekeyring as gkr
+import time
 import password
 
 class OpenKeyring(object):
     def __init__(self, keyring="open_sesame"):
-        """Get OpenSesame keyring name stored in gconf"""
+        """Get OpenSesame keyring name stored in gconf
+        """
         self.keyring = keyring
         self.default_keyring = gkr.get_default_keyring_sync()
         if self.keyring not in gkr.list_keyring_names_sync():
@@ -47,7 +49,8 @@ class OpenKeyring(object):
         gkr.create_sync(self.keyring, item_info.get_secret())
 
     def _auto_unlock_key_position(self):
-        """Find the open sesame password in the default keyring"""
+        """Find the open sesame password in the default keyring
+        """
         found_pos = None
         default_keyring_ids = gkr.list_item_ids_sync(self.default_keyring)
         for pos in default_keyring_ids:
@@ -59,10 +62,13 @@ class OpenKeyring(object):
         return found_pos
     
     def get_password(self, pos):
-        return gkr.item_get_info_sync(self.keyring, pos).get_secret()
+        """Don't actually return the password though, keep it in secure memory
+        """
+        return gkr.item_get_info_sync(self.keyring, pos)
 
     def get_position_searchable(self):
-        """Return dict of the position and corrasponding searchable str"""
+        """Return dict of the position and corrasponding searchable str
+        """
         ids = gkr.list_item_ids_sync(self.keyring)
         position_searchable = {}
         for i in ids:
@@ -71,20 +77,24 @@ class OpenKeyring(object):
         return position_searchable
 
     def _match_exists(self, searchable):
-        """Make sure the searchable description doesn't already exist"""
+        """Make sure the searchable description doesn't already exist
+        """
         position_searchable = self.get_position_searchable()
-        for val in position_searchable.values():
+        for pos,val in position_searchable.iteritems():
             if val == searchable:
-                return True
+                return pos
         return False
 
     def save_password(self, password, **attrs):
         """Save the new password, but don't wipe out an older version of 
         searchable
         """
-        if self._match_exists(attrs['searchable']):
-            # TODO finish implementing this
-            gkr.item_get_attributes_sync(self.keyring, i)['searchable'] = 'old ' + attrs['searchable']
+        pos_of_match = self._match_exists(attrs['searchable'])
+        print pos_of_match
+        if pos_of_match:
+            old_password_date = 'old_password_' + time.strftime("%Y/%m/%d")
+            attrs[old_password_date] = self.get_password(pos_of_match).get_secret()
+            gkr.item_delete_sync(self.keyring, pos_of_match)
         desc = attrs['searchable']
         pos = gkr.item_create_sync(self.keyring
                                   ,gkr.ITEM_GENERIC_SECRET

@@ -31,7 +31,7 @@ class Launcher(gobject.GObject):
         gtk.idle_add(showit)
 
     def popup(self):
-        self.active_win = get_active_window()[0:20]
+        self.active_win = get_active_window()
         ring = OpenKeyring()
         search = Searchable(ring.get_position_searchable())
         def showit():

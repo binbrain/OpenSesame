@@ -1,3 +1,7 @@
+"""
+Utilities to assist with desktop related tasks
+"""
+
 import wnck
 import gtk
 import glib
@@ -15,18 +19,15 @@ def yieldsleep(func):
         glib.idle_add(step)
     return start
 
-def secured_clipboard(pw):
-    """ this clipboard only allows 1 paste """
-
+def secured_clipboard(item):
+    """This clipboard only allows 1 paste 
+    """
     def set_text(clipboard, selectiondata, info, data):
-        selectiondata.set_text(pw)
+        selectiondata.set_text(item.get_secret())
         clipboard.clear()
-
     def clear(clipboard, data):
-        print clipboard
-        print data
-        print "should be cleared by now"
-
+        #TODO verify buffer is empty
+        pass
     targets = [ ("STRING", 0, 0),
               ("TEXT", 0, 1),
               ("COMPOUND_TEXT", 0, 2),
@@ -34,8 +35,9 @@ def secured_clipboard(pw):
     cp = gtk.clipboard_get()
     cp.set_with_data(targets, set_text, clear)
         
-
 def get_active_window():
+    """Get the currently focused window
+    """
     active_win = None
     default = wnck.screen_get_default()
     while gtk.events_pending():
@@ -52,5 +54,5 @@ def paste(active_win):
     xdotool_cmd = 'xdotool search "%s" windowactivate --sync  key --clearmodifiers ctrl+v' % active_win
     p = subprocess.Popen(xdotool_cmd, stdout=subprocess.PIPE ,stderr=subprocess.PIPE, shell=True)
     output, errors = p.communicate()
-    print "errors"
+    print xdotool_cmd
     print errors

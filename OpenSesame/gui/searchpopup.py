@@ -25,15 +25,15 @@ class SearchPopup(gtk.Window):
 
     def do_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
-        # Sets the operator to clear which deletes everything below where an 
-        # object is drawn
+        #Sets the operator to clear which deletes everything below where an 
+        #object is drawn
         cr.set_operator(cairo.OPERATOR_CLEAR)
         # Makes the mask fill the entire window
         cr.rectangle(0, 0, *widget.get_size())
-        # Deletes everything in the window (since the compositing operator is
-        # clear and mask fills the entire window
+        #Deletes everything in the window (since the compositing operator is
+        #clear and mask fills the entire window
         cr.fill()
-        # Set the compositing operator back to the default
+        #Set the compositing operator back to the default
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(.1,.1,.1,.5)
         self._rounded_edge_draw(cr, 4, 4, 480, 75)
@@ -86,12 +86,12 @@ class SearchPopup(gtk.Window):
                 close = True
         elif keyval_name(key_pressed) == 'space':
             if len(self.search.string) > 0:
-                # TODO unsecured memory
+                #TODO unsecured memory
                 pw, phonetic = self.pw_engine.create_passwords()[0]
-                self.ring.save_password(pw
-                                       ,searchable=self.search.string
-                                       ,phonetic=phonetic)
-                secured_clipboard(pw)
+                pos = self.ring.save_password(pw
+                                             ,searchable=self.search.string
+                                             ,phonetic=phonetic)
+                secured_clipboard(self.ring.get_password(pos))
                 close = True
         elif keyval_name(key_pressed) == 'Escape':
             close = True
