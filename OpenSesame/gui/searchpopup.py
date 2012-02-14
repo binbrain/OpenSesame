@@ -55,8 +55,6 @@ class SearchPopup(gtk.Window):
         else:
             if len(self.search.string) > 0:
                 cr.show_text("<SpaceBar> new password")
-            else:
-                cr.show_text("  <Ctrl>-k configure")
         cr.stroke()
 
     def _inside_frame(self, cr, x, r=.1, g=.1, b=.1):
@@ -93,8 +91,6 @@ class SearchPopup(gtk.Window):
                                              ,phonetic=phonetic)
                 secured_clipboard(self.ring.get_password(pos))
                 close = True
-        elif keyval_name(key_pressed) == 'Escape':
-            close = True
         elif key_pressed < 256 and key_pressed > 32:
             self.search.push(chr(key_pressed))
         return close
@@ -118,8 +114,9 @@ class SearchPopup(gtk.Window):
         self._inside_right_frame(cr)
 
     def key_pressed(self, widget, event):
-        if not self._check_input(event.keyval):
-            self._redraw_left_frame(widget, event.keyval)
-            self._redraw_right_frame(widget, event.keyval)
-        else:
-            self.emit("copied-event")
+        if not keyval_name(event.keyval) == 'Escape':
+            if not self._check_input(event.keyval):
+                self._redraw_left_frame(widget, event.keyval)
+                self._redraw_right_frame(widget, event.keyval)
+            else:
+                self.emit("copied-event")

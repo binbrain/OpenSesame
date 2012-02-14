@@ -12,7 +12,7 @@ import time
 import password
 
 class OpenKeyring(object):
-    def __init__(self, keyring="open_sesame"):
+    def __init__(self, keyring="opensesame"):
         """Get OpenSesame keyring name stored in gconf
         """
         self.keyring = keyring
@@ -36,7 +36,7 @@ class OpenKeyring(object):
         """
         if not self._auto_unlock_key_position():
             pw, phonetic  = password.create_passwords()[0]
-            desc = "open_sesame"
+            desc = "opensesame"
             attrs = {'application': desc, 'phonetic': phonetic}
             gkr.item_create_sync(self.default_keyring
                                 ,gkr.ITEM_GENERIC_SECRET
@@ -56,7 +56,7 @@ class OpenKeyring(object):
         for pos in default_keyring_ids:
             item_attrs = gkr.item_get_attributes_sync(self.default_keyring, pos)
             app = 'application'
-            if item_attrs.has_key(app) and item_attrs[app] == "open_sesame":
+            if item_attrs.has_key(app) and item_attrs[app] == "opensesame":
                 found_pos = pos
                 break
         return found_pos

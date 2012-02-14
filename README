@@ -14,4 +14,4 @@ python setup.py install
 
 Dependencies
 ============
-python pygtk pycairo apg keybinder
+python2.7 xdotool python-keybinder python-cairo apg python-wnck

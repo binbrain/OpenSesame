@@ -1,7 +1,7 @@
 """
 Currently best option as-is for FIPS 181 automated password generator
 
-TODO: implemented FIPS 181 in Python (or extend existing attempts)
+TODO: implement FIPS 181 in Python (or extend existing attempts)
 """
 
 import subprocess
