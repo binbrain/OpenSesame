@@ -7,7 +7,7 @@ TODO: implement FIPS 181 in Python (or extend existing attempts)
 import subprocess
 
 def create_passwords():
-    pipe = subprocess.Popen(["apg", "-t"], stdout=subprocess.PIPE)
+    pipe = subprocess.Popen(["apg", "-t", "-M NS"], stdout=subprocess.PIPE)
     options = list()
     for l in pipe.stdout.xreadlines():
         options.append(l.split())
