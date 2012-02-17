@@ -37,7 +37,7 @@ class SearchPopup(gtk.Window):
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(.1,.1,.1,.5)
         self._rounded_edge_draw(cr, 4, 4, 480, 75)
-        self._inside_frame(cr, 11)
+        self._inside_frame(cr, 10)
         self._inside_right_frame(cr)
 
     def _inside_right_frame(self, cr):
@@ -59,7 +59,7 @@ class SearchPopup(gtk.Window):
 
     def _inside_frame(self, cr, x, r=.1, g=.1, b=.1):
         cr.set_source_rgba(r, g, b, 1)
-        self._rounded_edge_draw(cr, x, 8, 230, 66)
+        self._rounded_edge_draw(cr, x, 10, 230, 63)
 
     def _rounded_edge_draw(self, cr, x, y, width, height):
         aspect = 1.0

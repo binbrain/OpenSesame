@@ -51,8 +51,12 @@ def get_active_window():
     return active_win
 
 def paste(active_win):
-    xdotool_cmd = 'xdotool search "%s" windowactivate --sync  key --clearmodifiers ctrl+v' % active_win
-    p = subprocess.Popen(xdotool_cmd, stdout=subprocess.PIPE ,stderr=subprocess.PIPE, shell=True)
+    paste_cmd = 'ctrl+v'
+    xdo_cmd = 'xdotool search "%s" windowactivate --sync key --clearmodifiers %s'
+    p = subprocess.Popen(xdo_cmd % (active_win, paste_cmd)
+                        ,stdout=subprocess.PIPE 
+                        ,stderr=subprocess.PIPE
+                        ,shell=True)
     output, errors = p.communicate()
-    print xdotool_cmd
+    print xdo_cmd
     print errors

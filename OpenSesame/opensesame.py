@@ -29,7 +29,7 @@ class Launcher(gobject.GObject):
         def showit():
             self.keyfade = KeyFade(self.active_win)
             self.keyfade.present()
-        gtk.idle_add(showit)
+        gobject.idle_add(showit)
 
     def popup(self):
         if self.popupwin:
@@ -42,7 +42,7 @@ class Launcher(gobject.GObject):
             self.popupwin = SearchPopup(search, ring, pw_engine)
             self.popupwin.connect("copied-event", self.copied_to_buffer)
             self.popupwin.present()
-        gtk.idle_add(showit)
+        gobject.idle_add(showit)
 
 def main():
     launcher = Launcher()
