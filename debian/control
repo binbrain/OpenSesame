@@ -10,4 +10,6 @@ Package: opensesame
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-keybinder, apg, python-cairo, python-wnck, xdotool
 Provides: ${python:Provides}
-Description: OpenSesame is an open source password manager designed to be secure and easy to use
+Description: Simple secure quick way to generate and retrieve passwords in GNOME
+ OpenSesame allows for fast creation and retrieval of passwords. Passwords are 
+ created using APG and stored using GNOME-keyring.

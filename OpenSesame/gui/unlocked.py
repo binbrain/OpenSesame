@@ -5,7 +5,6 @@ import os
 from OpenSesame.xutils import yieldsleep
 
 class KeyFade(gtk.Window):
-
     def __init__(self, active_win):
         super(KeyFade, self).__init__()
         self.active_win = active_win

@@ -58,5 +58,3 @@ def paste(active_win):
                         ,stderr=subprocess.PIPE
                         ,shell=True)
     output, errors = p.communicate()
-    print xdo_cmd
-    print errors
