@@ -6,8 +6,11 @@ TODO: implement FIPS 181 in Python (or extend existing attempts)
 
 import subprocess
 
+from OpenSesame.secureutils import lookup_path
+
 def create_passwords():
-    pipe = subprocess.Popen(["apg", "-t", "-M NS"], stdout=subprocess.PIPE)
+    apg_bin = lookup_path('apg')
+    pipe = subprocess.Popen([apg_bin, "-t", "-M NS"], stdout=subprocess.PIPE)
     options = list()
     for l in pipe.stdout.xreadlines():
         options.append(l.split())

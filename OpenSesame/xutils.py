@@ -7,6 +7,8 @@ import gtk
 import glib
 import subprocess
 
+from OpenSesame.secureutils import lookup_path
+
 def yieldsleep(func):
     def start(*args, **kwds):
         iterable = func(*args, **kwds)
@@ -52,7 +54,8 @@ def get_active_window():
 
 def paste(active_win):
     paste_cmd = 'ctrl+v'
-    xdo_cmd = 'xdotool search "%s" windowactivate --sync key --clearmodifiers %s'
+    xdo_bin = lookup_path('xdotool')
+    xdo_cmd = xdo_bin + ' search "%s" windowactivate --sync key --clearmodifiers %s'
     p = subprocess.Popen(xdo_cmd % (active_win, paste_cmd)
                         ,stdout=subprocess.PIPE 
                         ,stderr=subprocess.PIPE
