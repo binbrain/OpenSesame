@@ -63,6 +63,7 @@ class OpenKeyring(object):
     
     def get_password(self, pos):
         """Don't actually return the password though, keep it in secure memory
+        by returning the item
         """
         return gkr.item_get_info_sync(self.keyring, pos)
 

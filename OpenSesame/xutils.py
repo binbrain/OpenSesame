@@ -1,13 +1,14 @@
 """
 Utilities to assist with desktop related tasks
 """
-
 import wnck
 import gtk
 import glib
 import subprocess
+import time
 
 from OpenSesame.secureutils import lookup_path
+
 
 def yieldsleep(func):
     def start(*args, **kwds):
@@ -18,22 +19,29 @@ def yieldsleep(func):
                 glib.timeout_add(secs, step)
             except StopIteration:
                 pass
+            except Exception:
+                pass
         glib.idle_add(step)
     return start
 
 def secured_clipboard(item):
     """This clipboard only allows 1 paste 
     """
+    expire_clock = time.time()
     def set_text(clipboard, selectiondata, info, data):
-        selectiondata.set_text(item.get_secret())
-        clipboard.clear()
+        # expire after 15 secs
+        if 15.0 >= time.time() - expire_clock:
+            selectiondata.set_text(item.get_secret())
+            clipboard.clear()
     def clear(clipboard, data):
-        #TODO verify buffer is empty
+        """Clearing of the buffer is deferred this only gets called if the 
+        paste is actually triggered
+        """
         pass
-    targets = [ ("STRING", 0, 0),
-              ("TEXT", 0, 1),
-              ("COMPOUND_TEXT", 0, 2),
-              ("UTF8_STRING", 0, 3) ]
+    targets = [("STRING", 0, 0)
+              ,("TEXT", 0, 1)
+              ,("COMPOUND_TEXT", 0, 2)
+              ,("UTF8_STRING", 0, 3)]
     cp = gtk.clipboard_get()
     cp.set_with_data(targets, set_text, clear)
         

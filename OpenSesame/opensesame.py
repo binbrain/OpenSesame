@@ -12,9 +12,8 @@ from OpenSesame.searchable import Searchable
 from OpenSesame.keyring import OpenKeyring
 import OpenSesame.password as pw_engine
 
-
 class Launcher(gobject.GObject):
-    popupwin=None
+    popupwin = None
     def __init__(self):
         self.__gobject_init__()
         gobject.signal_new("copied-event", SearchPopup, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
@@ -25,11 +24,11 @@ class Launcher(gobject.GObject):
         paste(self.active_win)
         self.emit("pasted-event")
 
-    def do_keyfade(self, widget):
-        def showit():
+    def keyfade(self, widget):
+        def do_keyfade():
             self.keyfade = KeyFade(self.active_win)
             self.keyfade.present()
-        gobject.idle_add(showit)
+        gobject.idle_add(do_keyfade)
 
     def popup(self):
         if self.popupwin:
@@ -38,16 +37,16 @@ class Launcher(gobject.GObject):
         self.active_win = get_active_window()
         ring = OpenKeyring()
         search = Searchable(ring.get_position_searchable())
-        def showit():
+        def do_popup():
             self.popupwin = SearchPopup(search, ring, pw_engine)
             self.popupwin.connect("copied-event", self.copied_to_buffer)
             self.popupwin.present()
-        gobject.idle_add(showit)
+        gobject.idle_add(do_popup)
 
 def main():
     launcher = Launcher()
     gobject.signal_new("pasted-event", Launcher, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
-    launcher.connect("pasted-event", launcher.do_keyfade)
+    launcher.connect("pasted-event", launcher.keyfade)
     keybinder.bind("<Ctrl>k", launcher.popup)
     gtk.main()
 

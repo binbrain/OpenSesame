@@ -5,7 +5,6 @@ from math import pi as M_PI
 
 from OpenSesame.xutils import secured_clipboard
 
-
 class SearchPopup(gtk.Window):
     def __init__(self, search, ring, pw_engine):
         super(SearchPopup, self).__init__()
