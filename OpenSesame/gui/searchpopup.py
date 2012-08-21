@@ -84,10 +84,8 @@ class SearchPopup(gtk.Window):
         elif keyval_name(key_pressed) == 'space':
             if len(self.search.string) > 0:
                 #TODO unsecured memory
-                pw, phonetic = self.pw_engine.create_passwords()[0]
-                pos = self.ring.save_password(pw
-                                             ,searchable=self.search.string
-                                             ,phonetic=phonetic)
+                pw = self.pw_engine.create_passwords()[0]
+                pos = self.ring.save_password(pw, searchable=self.search.string)
                 secured_clipboard(self.ring.get_password(pos))
                 close = True
         elif key_pressed < 256 and key_pressed > 32:

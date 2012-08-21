@@ -35,12 +35,11 @@ class OpenKeyring(object):
         these things don't already exist.
         """
         if not self._auto_unlock_key_position():
-            pw, phonetic  = password.create_passwords()[0]
-            desc = "opensesame"
-            attrs = {'application': desc, 'phonetic': phonetic}
+            pw  = password.create_passwords()[0]
+            attrs = {'application': self.keyring}
             gkr.item_create_sync(self.default_keyring
                                 ,gkr.ITEM_GENERIC_SECRET
-                                ,desc
+                                ,self.keyring
                                 ,attrs
                                 ,pw
                                 ,True)
@@ -87,20 +86,24 @@ class OpenKeyring(object):
         return False
 
     def save_password(self, password, **attrs):
-        """Save the new password, but don't wipe out an older version of 
-        searchable
+        """Save the new password, save the old password with the date prepended
         """
         pos_of_match = self._match_exists(attrs['searchable'])
-        print pos_of_match
         if pos_of_match:
-            old_password_date = 'old_password_' + time.strftime("%Y/%m/%d")
-            attrs[old_password_date] = self.get_password(pos_of_match).get_secret()
+            old_password = self.get_password(pos_of_match).get_secret()
             gkr.item_delete_sync(self.keyring, pos_of_match)
+            desc = str(int(time.time())) + "_" + attrs['searchable']
+            gkr.item_create_sync(self.keyring
+                                ,gkr.ITEM_GENERIC_SECRET
+                                ,desc
+                                ,{}
+                                ,old_password
+                                ,True)
         desc = attrs['searchable']
         pos = gkr.item_create_sync(self.keyring
-                                  ,gkr.ITEM_GENERIC_SECRET
-                                  ,desc
-                                  ,attrs
-                                  ,password
-                                  ,True)
+                                   ,gkr.ITEM_GENERIC_SECRET
+                                   ,desc
+                                   ,attrs
+                                   ,password
+                                   ,True)
         return pos
