@@ -10,7 +10,7 @@ from OpenSesame.secureutils import lookup_path
 
 def create_passwords():
     apg_bin = lookup_path('apg')
-    pipe = subprocess.Popen([apg_bin, "-MNS"], stdout=subprocess.PIPE)
+    pipe = subprocess.Popen([apg_bin, "-MNSC"], stdout=subprocess.PIPE)
     options = list()
     for l in pipe.stdout.xreadlines():
         options.append(l)
