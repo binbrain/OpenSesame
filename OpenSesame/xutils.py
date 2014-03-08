@@ -25,7 +25,7 @@ def yieldsleep(func):
     return start
 
 def secured_clipboard(item):
-    """This clipboard only allows 1 paste 
+    """This clipboard only allows 1 paste
     """
     expire_clock = time.time()
     def set_text(clipboard, selectiondata, info, data):
@@ -44,7 +44,7 @@ def secured_clipboard(item):
               ,("UTF8_STRING", 0, 3)]
     cp = gtk.clipboard_get()
     cp.set_with_data(targets, set_text, clear)
-        
+
 def get_active_window():
     """Get the currently focused window
     """
@@ -63,9 +63,15 @@ def get_active_window():
 def paste(active_win):
     paste_cmd = 'ctrl+v'
     xdo_bin = lookup_path('xdotool')
+    if not xdo_bin:
+        print "xdotools not found"
+        return
+
     xdo_cmd = xdo_bin + ' search "%s" windowactivate --sync key --clearmodifiers %s'
-    p = subprocess.Popen(xdo_cmd % (active_win, paste_cmd)
-                        ,stdout=subprocess.PIPE 
-                        ,stderr=subprocess.PIPE
-                        ,shell=True)
+    p = subprocess.Popen(
+        xdo_cmd % (active_win, paste_cmd),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True
+    )
     output, errors = p.communicate()

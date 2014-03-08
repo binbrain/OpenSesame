@@ -18,11 +18,14 @@ class KeyFade(gtk.Window):
         self.set_skip_pager_hint(True)
         self.set_keep_above(True)
         self.connect("expose-event", self.do_expose_event)
-        self.fading = True
+        self.image = os.path.dirname(__file__)+"/key.png"
+        if not os.path.exists(self.image):
+            print "couldn't find the key image in {0}".format(self.image)
+        self.key_image = cairo.ImageSurface.create_from_png(self.image)
 
     @yieldsleep
-    def do_expose_event(self, widget, event): 
-        if self.fading:
+    def do_expose_event(self, widget, event):
+        if os.path.exists(self.image):
             timer = range(0,18)
             timer.reverse()
             fadealpha = 0.9
@@ -34,9 +37,7 @@ class KeyFade(gtk.Window):
                 cr.rectangle(0, 0, *widget.get_size())
                 cr.fill()
                 cr.set_operator(cairo.OPERATOR_OVER)
-                image = os.path.dirname(__file__)+"/key.png"
-                key_image = cairo.ImageSurface.create_from_png(image)
-                cr.set_source_surface(key_image, 0, 0)
+                cr.set_source_surface(self.key_image, 0, 0)
                 cr.paint_with_alpha(fadealpha)
             self.fading = False
             self.hide()

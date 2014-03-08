@@ -2,7 +2,7 @@
 GNOME-keyring intergration wrapper. Python GNOME-keyring automagically saves 
 queries into secured memory. This implementation is mindful to not remove
 secrets into unsecured Python memory.
-    
+
 quick search descriptions of keys loaded into secure memory
 http://developer.gnome.org/gnome-keyring/stable/gnome-keyring-Non-pageable-Memory.html
 """
@@ -11,6 +11,7 @@ import gnomekeyring as gkr
 import time
 import password
 
+
 class OpenKeyring(object):
     def __init__(self, keyring="opensesame"):
         """Get OpenSesame keyring name stored in gconf
@@ -18,6 +19,7 @@ class OpenKeyring(object):
         self.keyring = keyring
         self.default_keyring = gkr.get_default_keyring_sync()
         if self.keyring not in gkr.list_keyring_names_sync():
+            print "1st time"
             self.first_time_setup()
         self.unlock_keyring()
 
@@ -26,11 +28,11 @@ class OpenKeyring(object):
         if info.get_is_locked():
             found_pos = self._auto_unlock_key_position()
             item_info = gkr.item_get_info_sync(self.default_keyring, found_pos)
-            gkr.unlock_sync(self.keyring, item_info.get_secret()) 
+            gkr.unlock_sync(self.keyring, item_info.get_secret())
 
     def first_time_setup(self):
-        """First time running Open Sesame? 
-        
+        """First time running Open Sesame?
+
         Create keyring and an auto-unlock key in default keyring. Make sure
         these things don't already exist.
         """
@@ -58,8 +60,9 @@ class OpenKeyring(object):
             if item_attrs.has_key(app) and item_attrs[app] == "opensesame":
                 found_pos = pos
                 break
+
         return found_pos
-    
+
     def get_password(self, pos):
         """Don't actually return the password though, keep it in secure memory
         by returning the item
@@ -73,7 +76,9 @@ class OpenKeyring(object):
         position_searchable = {}
         for i in ids:
             item_attrs = gkr.item_get_attributes_sync(self.keyring, i)
-            position_searchable[i] = item_attrs['searchable'] 
+            if item_attrs.has_key('searchable'):
+                position_searchable[i] = item_attrs['searchable']
+
         return position_searchable
 
     def _match_exists(self, searchable):
@@ -83,6 +88,7 @@ class OpenKeyring(object):
         for pos,val in position_searchable.iteritems():
             if val == searchable:
                 return pos
+
         return False
 
     def save_password(self, password, **attrs):
@@ -93,17 +99,22 @@ class OpenKeyring(object):
             old_password = self.get_password(pos_of_match).get_secret()
             gkr.item_delete_sync(self.keyring, pos_of_match)
             desc = str(int(time.time())) + "_" + attrs['searchable']
-            gkr.item_create_sync(self.keyring
-                                ,gkr.ITEM_GENERIC_SECRET
-                                ,desc
-                                ,{}
-                                ,old_password
-                                ,True)
+            pos = gkr.item_create_sync(
+                self.keyring,
+                gkr.ITEM_GENERIC_SECRET,
+                desc,
+                {'archived':str(int(time.time()))},
+                old_password,
+                True
+            )
         desc = attrs['searchable']
-        pos = gkr.item_create_sync(self.keyring
-                                   ,gkr.ITEM_GENERIC_SECRET
-                                   ,desc
-                                   ,attrs
-                                   ,password
-                                   ,True)
+        pos = gkr.item_create_sync(
+            self.keyring,
+            gkr.ITEM_GENERIC_SECRET,
+            desc,
+            attrs,
+            password,
+            True
+        )
+
         return pos

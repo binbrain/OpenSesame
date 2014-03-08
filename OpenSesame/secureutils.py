@@ -13,4 +13,4 @@ def lookup_path(bin_name):
         found = os.path.isfile(fq_path) and os.access(fq_path, os.X_OK)
         if found:
             return fq_path
-    return False
+    return None

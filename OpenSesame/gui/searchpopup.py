@@ -19,20 +19,20 @@ class SearchPopup(gtk.Window):
         self.set_property("resizable", False)
         self.set_skip_taskbar_hint(True)
         self.set_skip_pager_hint(True)
-        self.connect("expose-event", self.do_expose_event) 
+        self.connect("expose-event", self.do_expose_event)
         self.connect("key-press-event", self.key_pressed)
 
     def do_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
-        #Sets the operator to clear which deletes everything below where an 
-        #object is drawn
+        # Sets the operator to clear which deletes everything below where an
+        # object is drawn
         cr.set_operator(cairo.OPERATOR_CLEAR)
         # Makes the mask fill the entire window
         cr.rectangle(0, 0, *widget.get_size())
-        #Deletes everything in the window (since the compositing operator is
-        #clear and mask fills the entire window
+        # Deletes everything in the window (since the compositing operator is
+        # clear and mask fills the entire window
         cr.fill()
-        #Set the compositing operator back to the default
+        # Set the compositing operator back to the default
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(.1,.1,.1,.5)
         self._rounded_edge_draw(cr, 4, 4, 480, 75)
@@ -83,15 +83,15 @@ class SearchPopup(gtk.Window):
                 close = True
         elif keyval_name(key_pressed) == 'space':
             if len(self.search.string) > 0:
-                #TODO unsecured memory
                 pw = self.pw_engine.create_passwords()[0]
                 pos = self.ring.save_password(pw, searchable=self.search.string)
                 secured_clipboard(self.ring.get_password(pos))
                 close = True
         elif key_pressed < 256 and key_pressed > 32:
             self.search.push(chr(key_pressed))
+
         return close
-                
+
     def _redraw_left_frame(self, widget, key_pressed):
         cr = widget.window.cairo_create()
         self._inside_frame(cr, 11)
@@ -105,7 +105,7 @@ class SearchPopup(gtk.Window):
                 cr.set_source_rgb(1, .1, .1)
             cr.show_text(c)
         cr.stroke()
-    
+
     def _redraw_right_frame(self, widget, key_pressed):
         cr = widget.window.cairo_create()
         self._inside_right_frame(cr)
