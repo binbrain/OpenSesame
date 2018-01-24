@@ -1,3 +1,5 @@
+THIS PROJECT IS NO LONGER MAINTAINED AND LIKELY WILL NOT WORK
+
 OpenSesame
 ==========
 OpenSesame is an open source password management tool designed to be secure and
